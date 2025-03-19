@@ -30,11 +30,12 @@ jobs:
             ECR_REPOSITORY: ${{secrets.AWS_ECR_REPO}}
             IMAGE_TAG: latest
           run: |
-            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            docker build -t demoapp .
+            docker tag demoapp $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
         - name: Save Docker Image
-          run: docker save -o my-app.tar $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          run: docker save -o my-app.tar demoapp
         
         - name: Scan with Clair
           uses: quay/clair-action@main
