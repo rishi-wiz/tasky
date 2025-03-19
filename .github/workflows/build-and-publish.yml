@@ -37,8 +37,7 @@ jobs:
         - name: Install Grype Scanner
           run: |
             curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
-            sudo mv grype /usr/local/bin/
-
+            
         - name: Scan Image with Grype
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
