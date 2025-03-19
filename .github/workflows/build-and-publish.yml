@@ -34,15 +34,15 @@ jobs:
             docker tag demoapp $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-        - name: Install Clair Scanner (Klar)
+        - name: Install Grype Scanner
           run: |
-            wget https://github.com/optiopay/klar/releases/download/v2.4.0/klar-linux-amd64 -O klar
-            chmod +x klar
-            sudo mv klar /usr/local/bin/
+            curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
+            sudo mv grype /usr/local/bin/
 
-        - name: Scan Image with Clair
+        - name: Scan Image with Grype
           env:
-            CLAIR_ADDR: "http://clair:6060"
-            CLAIR_OUTPUT: "High"
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPO }}
+            IMAGE_TAG: latest
           run: |
-            klar --registry=$ECR_REGISTRY --repository=$ECR_REPOSITORY --tag=$IMAGE_TAG
+            grype $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
