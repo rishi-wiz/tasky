@@ -1,10 +1,12 @@
 name: Build and Push Docker image
-on: 
-  push: 
-    branches: [ "master" ]
+
+on:
+  push:
+    branches:
+      - main
   
 jobs:
-  Test:
+  build:
     name: Build Docker Image
     runs-on: ubuntu-latest  
     steps:  
