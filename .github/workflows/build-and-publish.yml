@@ -34,12 +34,15 @@ jobs:
             docker tag demoapp $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-        - name: Save Docker Image
-          run: docker save -o my-app.tar demoapp
-        
-        - name: Scan with Clair
-          uses: quay/clair-action@main
-          with:
-            image-path: my-app.tar
-            format: sarif
-            output: clair_results.sarif
+        - name: Install Clair Scanner (Klar)
+          run: |
+            wget https://github.com/optiopay/klar/releases/download/v2.4.0/klar-linux-amd64 -O klar
+            chmod +x klar
+            sudo mv klar /usr/local/bin/
+
+        - name: Scan Image with Clair
+          env:
+            CLAIR_ADDR: "http://clair:6060"
+            CLAIR_OUTPUT: "High"
+          run: |
+            klar --registry=$ECR_REGISTRY --repository=$ECR_REPOSITORY --tag=$IMAGE_TAG
