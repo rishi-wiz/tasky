@@ -12,10 +12,6 @@ jobs:
     steps:  
         - name: Checkout
           uses: actions/checkout@v2    
-
-        - name: Install Grype Scanner
-          run: |
-            curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
           
         - name: Setup AWS ECR Details
           uses: aws-actions/configure-aws-credentials@v1
